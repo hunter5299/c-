@@ -1,1 +1,158 @@
 
+#include<stdio.h>
+#include<stdlib.h>
+typedef struct address{
+    int id;
+    char name[64];
+    char telNumber[15];
+}address;
+//头指针不存放数据
+typedef struct linkList{
+    address date;
+    struct linkList *next;
+}linkList;
+int userInter();
+int ergodic(linkList *link);
+int add(linkList **linkhead);
+int initeBook(linkList **linkhead);
+int delete(linkList **linkhead);
+int search(linkList *linkhead);
+
+int main(){
+    userInter();
+    int n=0;
+    linkList *link=NULL;
+    initeBook(&link);
+    while(scanf("%d",&n)){
+        switch (n){
+            case 1:ergodic(link);
+                break;
+            case 2:search(link);
+                break;        
+            case 3:add(&link);
+                break;
+            case 4:delete(&link);
+                break;
+            case 5:goto END;
+        }
+        
+    }
+END:
+    printf("this book closed\n");
+    return 0;
+}
+
+
+int userInter(){
+    printf("*****************************\n");
+    printf("*****  user interface:  *****\n");
+    printf("please enter number to function: \n");
+    printf("*****  1:all of address  *****\n");
+    printf("*****  2:serch address  ******\n");
+    printf("*****  3:add address  ********\n");
+    printf("*****  4:delete address  *****\n");
+    printf("*****  5:close BOOK  *********\n");
+    printf("******************************\n");
+    return 0;
+}
+int ergodic(linkList *link){
+    if(link==NULL){
+        return -1;
+    }
+    if(link->next==NULL){
+        printf("this BOOK is empty!\n");
+        return 0;
+    }
+    linkList* point=NULL;
+    point=link->next;
+    while(point!=NULL){
+        printf("id:%d name:%s telNum:%s\n", point->date.id, point->date.name, point->date.telNumber);
+        point=point->next;
+    }
+    return 0;
+}
+int initeBook(linkList **linkhead){
+    linkList*temp=NULL;
+    temp=(linkList*)malloc(sizeof(linkList));
+    temp->next=NULL;
+    *linkhead=temp;
+    return 0;
+}
+int add(linkList **linkhead){
+    if(*linkhead==NULL){
+        return -1;
+    }
+    linkList* temp=NULL;
+    int count=0;
+    linkList* q=NULL;
+    temp=(linkList*)malloc(sizeof(linkList));
+    temp->next=NULL;
+    printf(" enter name:\n");
+    scanf("%s",&(temp->date.name));
+    printf(" enter telNumber:\n");
+    scanf("%s",&(temp->date.telNumber));
+
+    q=*linkhead;
+    while(q->next!=NULL){
+        q=q->next;
+        count++;
+    }
+    count+=1;
+    temp->date.id=count;
+    q->next=temp;
+    printf("add success!\n");
+    userInter();
+    return 0;
+}
+int delete(linkList **linkhead){
+    if(linkhead==NULL){
+        return -1;
+    }
+    int num=0;
+    linkList *temp=*linkhead;
+    if(temp==NULL){
+        printf("this book is empy!!!delete\n");
+        return -2;
+    }
+    linkList *q=NULL;
+    int i=0;
+    ergodic(*linkhead);
+    printf("enter delete id:\n");
+    scanf("%d",&num);
+    //若仅有一个节点，需考虑
+    
+    //寻找删除的前一个
+    while(temp!=NULL && i<num-1){
+        temp=temp->next;
+        i++;
+    }
+    if(temp==NULL||i>num-1){
+        printf("this id is not exist\n");
+        return -3;
+    }
+
+    q=temp->next;
+    temp->next=q->next;
+    free(q);
+    printf("delete success!\n");
+    userInter();
+    return 0;
+}
+int search(linkList *linkhead){
+    if(linkhead==NULL){
+        return -1;
+    }
+    if(linkhead->next==NULL){
+        printf("this BOOk is empty!!\n");
+        return -2;
+    }
+    linkList *temp=linkhead;
+    int num=0;
+    printf("enter search id:\n");
+    scanf("%d",&num);
+    while(temp->date.id!=num){
+        temp=temp->next;
+    }
+     printf("id:%d name:%s telNum:%s\n", temp->date.id, temp->date.name, temp->date.telNumber);
+     return 0;
+}
