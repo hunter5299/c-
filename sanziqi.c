@@ -64,16 +64,88 @@ int playMove(char arr[ROW][COL],int row,int col){
     }
     return 0;
 }
+int dMove(char (*arr)[COL],int row,int col,int *x,int *y){
+    int i=0;
+    //行
+    for( i=0;i<row ; i++){
+        if(arr[i][0]==arr[i][1]&&arr[i][0] =='#'){
+            *x=i;
+            *y=2;
+            return 1;
+        }else if(arr[i][1]==arr[i][2]&&arr[i][1] =='#'){
+            *x=i;
+            *y=0;
+            return 1;
+        }else if(arr[i][0]==arr[i][2]&&arr[i][0] =='#'){
+            *x=i;
+            *y=1;
+            return 1;
+        }
+    }
+    //列
+    for( i=0;i<col ; i++){
+        if(arr[0][i]==arr[1][i]&&arr[0][i]=='#'){
+            *y=i;
+            *x=2;
+            return 1;
+        }
+        if(arr[1][i]==arr[2][i]&&arr[1][i]=='#'){
+            *y=i;
+            *x=0;
+            return 1;
+        }
+        if(arr[0][i]==arr[2][i]&&arr[0][i]=='#'){
+            *y=i;
+            *x=1;
+            return 1;
+        }
+    }
+    //对角线
+    if(arr[0][0]==arr[1][1]&& arr[0][0]=='#'){
+       *x=2;
+       *y=2;
+        return 1;
+    }else if(arr[1][1]==arr[2][2]&& arr[1][1]=='#'){
+        *x=0;
+        *y=0;
+        return 1;
+    }
+    if(arr[0][2]==arr[1][1]&&arr[1][1]=='#'){
+        *x=2;
+        *y=0;
+        return 1;
+    }else if(arr[1][1]==arr[2][0]&&arr[1][1]=='#'){
+        *x=0;
+        *y=2;
+        return 1;
+    }
+    return 0;
+}
 int computerMove(char arr[ROW][COL],int row,int col){
     int x,y;
-    x=rand()%row;
-    y=rand()%col;
     printf("电脑输入\n");
+    //胜利>堵截
+        x=rand()%row;
+        y=rand()%col;
     while (1){
-        if(arr[x][y] ==' '){
+        //胜利
+        if(dMove(arr,row,col,&x,&y) && arr[x][y] ==' '){
             arr[x][y] = '#';
             break;
         }
+        //堵截
+       // else if(){
+
+        //}
+        else{
+            x=rand()%row;
+            y=rand()%col;
+            if(arr[x][y] ==' '){
+                arr[x][y] = '#';
+                break;
+            }
+        }
+        
     }
     return 0;
 }
@@ -98,7 +170,7 @@ char checkWin(char arr[ROW][COL],int row,int col){
     //列
     for( i=0;i<col ; i++){
         if(arr[0][i]==arr[1][i]&&arr[1][i]==arr[2][i]&&arr[0][i]!=' '){
-            return arr[i][0];
+            return arr[0][i];
         }
     }
     //对角线
@@ -131,16 +203,16 @@ int game(){
             playMove(arr,ROW,COL);
             //检查是否结束
             ret= checkWin(arr,ROW,COL);
+            displayGame(arr,ROW,COL);
             if(ret!='c'){
                 break;
             }
-            displayGame(arr,ROW,COL);
             computerMove(arr,ROW,COL);
+            displayGame(arr,ROW,COL);
             ret =checkWin(arr,ROW,COL);
             if(ret != 'c'){
                 break;
             }
-            displayGame(arr,ROW,COL);
        }
        if(ret == '*'){
            printf("玩家胜利\n");
