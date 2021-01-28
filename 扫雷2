@@ -1,0 +1,129 @@
+#define _CRT_SECURE_NO_WARNINGS 1
+#include<stdio.h>
+#define ROW 7
+#define COL 7
+#define ROWS ROW+2
+#define COLS COL+2
+#define COUNT 10
+
+void menu();
+void initBoard( char arr[ROWS][COLS],int row,int col,char c);
+void showBoard(char arr[ROWS][COLS], int row, int col);
+void setLei(char arr[ROWS][COLS], int row, int col,int count);
+void search(char arrSet[ROWS][COLS],char arrShow[ROWS][COLS],int row,int col);
+int getCount(char arr[ROWS][COLS], int x, int y);
+void game();
+int main(){
+	int input = 0;
+	do{
+		menu();
+		scanf("%d", &input);
+		switch (input){
+		case 1:
+			game();
+			break;
+		case 0:
+			printf("退出游戏\n");
+			break;
+		default:
+			printf("选择错误，请重新选择\n");
+			break;
+		}
+	} while (input);
+	return 0;
+}
+#include<time.h>
+#include<dos.h> 　
+void menu()
+{
+	printf("************************\n");
+	printf("******** 1.play ********\n");
+	printf("******** 0.exit ********\n");
+	printf("************************\n");
+}
+void initBoard(char arr[ROWS][COLS], int row, int col,char c){
+	int i, j;
+	for (i = 0; i < row; i++){
+		for (j = 0; j < col; j++){
+			arr[i][j] = c;
+		}
+	}
+}
+void showBoard(char arr[ROWS][COLS], int row, int col){
+	system("cls");
+	//打印列号
+	printf("  ");
+	for (int n = 1; n <=row ; n++){
+		printf("%d ", n);
+	}
+	printf("\n");
+	//遍历输出数据；
+	for (int i = 1; i <= row; i++){
+		//打印列号
+		printf("%d ", i);
+		for (int j = 1; j <= col; j++){
+			printf("%c ", arr[i][j]);
+		}
+		printf("\n");
+	}
+}
+void setLei(char arr[ROWS][COLS], int row, int col,int count){
+	int x, y;
+	while (count){
+		x = rand() % row + 1;
+		y = rand() % col + 1;
+		if (arr[x][y] == '0'){
+			arr[x][y] = '1';
+			count--;
+		}
+	}
+}
+
+
+int getCount(char arr[ROWS][COLS], int x,int y){
+	int ret=0;
+	int i, j;
+	for (i = x - 1; i <= x + 1; i++){
+		for (j = y - 1; j <= y + 1; j++){
+			ret += arr[i][j];
+		}
+	} //转化为整形数字
+	return ret - 9 * '0';
+
+}
+void search(char arrSet[ROWS][COLS],char arrShow[ROWS][COLS], int row, int col){
+	int x, y;
+	int ret=0;
+	int counted = 0;
+	while (counted < row*col-COUNT){
+		printf("请输入需要排查的位置：>\n");
+		scanf("%d %d", &x, &y);
+		if (x>=1&& x<=row && y>=1 && y<=col){
+			if (arrSet[x][y] == '1'){
+				printf("您被炸死了,游戏结束\n");
+				showBoard(arrSet, row, col);
+				//delay(1000);
+				break;
+			}
+			else{
+				ret = getCount(arrSet, x, y);
+				arrShow[x][y] = ret + '0';
+				showBoard(arrShow, row, col);
+				counted++;
+			}
+		}
+		else{
+			printf("位置不合法，请重新输入\n");
+		}
+	}
+}
+void game(){
+	srand((unsigned int)time(NULL));
+	char arrSet[ROWS][COLS];
+	char arrShow[ROWS][COLS];
+	initBoard(arrSet,ROWS,COLS,'0');
+	initBoard(arrShow, ROWS, COLS, '*');
+	showBoard(arrShow, ROW, COL);
+	setLei(arrSet, ROW, COL, COUNT);
+	search(arrSet,arrShow, ROW, COL);
+}
