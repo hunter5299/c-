@@ -15,15 +15,16 @@ int main(){
 		cin >> input;
 		switch (input){
 		case 1:
-			Worker *p;
-			p = new Employee(1, "zs", 1);
-			p->showInfo();
+			wm.showWorker();
 			break;
 		case 2:
+			wm.addEmp();
 			break; 
 		case 3:
+			wm.delEmp();
 			break;
 		case 4:
+			wm.modiEmp();
 			break;
 		case 5:
 			break;
@@ -36,6 +37,7 @@ int main(){
 			break;
 		default:
 			system("cls");
+			break;
 		}
 	} while (input);
 	system("pause");
